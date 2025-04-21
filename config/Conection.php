@@ -4,28 +4,22 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use SQLiteCloud\SQLiteCloudClient;
+use Dotenv\Dotenv;
 
-try {
+function conectarBD() {
+    try {
+        $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
+        $dotenv->load();
+
+        $DB_URL = $_ENV['DB_URL'];
+        $API_KEY = $_ENV['API_KEY'];
+        $sqlite = new SQLiteCloudClient();
+        $sqlite->connectWithString("$DB_URL/$API_KEY");
+
+        return $sqlite;
     
-    $sqlite = new SQLiteCloudClient();
-    $sqlite->connectWithString("sqlitecloud://clppbta2nz.g4.sqlite.cloud:8860/Inventory?apikey=Ue5HiXcbMqnpBrOfYF0B1Pdyqxoenax1zmzJahWjle4");
-
-    
-    $tableName = 'categorias';  
-    $query = "SELECT * FROM $tableName";
-
-    
-    $rowset = $sqlite->execute($query);
-
-    foreach ($rowset as $row) {
-        print_r($row);
+    } catch (Exception $e) {
+        die("Error de conexión: " . $e->getMessage());
     }
-
-  
-    $sqlite->disconnect();
-} catch (Exception $e) {
-
-    echo "Error: " . $e->getMessage();
 }
-
-?>
+    ?>

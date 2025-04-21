@@ -13,6 +13,7 @@
         }
     ],
     "require": {
-        "sqlitecloud/sqlitecloud": "^0.2.0"
+        "sqlitecloud/sqlitecloud": "^0.2.0",
+        "vlucas/phpdotenv": "^5.6"
     }
 }
