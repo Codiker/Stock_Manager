@@ -1,0 +1,232 @@
+<?php
+session_start();
+if (!isset($_SESSION['usuario_id'])) {
+    header("Location: login.php");
+    exit();
+}
+
+require_once __DIR__ . '/../../model/repository/ProductRepository.php';
+require_once __DIR__ . '/../../model/repository/CategoriaRepository.php';
+
+$repo = new ProductRepository();
+$categoriaRepo = new CategoriaRepository();
+
+$productos = $repo->listarActivos(); // Solo productos activos
+$categorias = $categoriaRepo->listarTodas();
+
+$errores = [];
+$valores = [];
+
+// Registro de nuevo producto
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once __DIR__ . '/../../model/Product.php';
+
+    $nombre = trim($_POST['nombre'] ?? '');
+    $descripcion = trim($_POST['descripcion'] ?? '');
+    $precio = floatval($_POST['precio'] ?? 0);
+    $stock = intval($_POST['stock'] ?? 0);
+    $categoria_id = intval($_POST['categoria_id'] ?? 0);
+    $activo = ($_POST['activo'] ?? '1') === '1';
+    $estado = $_POST['estado'] ?? 'disponible';
+
+    $valores = compact('nombre', 'descripcion', 'precio', 'stock', 'categoria_id', 'activo', 'estado');
+
+    $producto = new Producto(
+        null, $nombre, $descripcion, $precio,
+        $stock, $categoria_id, $activo, $estado
+    );
+
+    $errores = $producto->validar();
+
+    if (empty($errores)) {
+        $repo->guardar($producto);
+        header("Location: VistaProducto.php?success=Producto+guardado+con+éxito");
+        exit();
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>Gestión de Productos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+    <link href="public\templates\assets\css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../js/alerts.js" defer></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between mb-3">
+            <h2>Gestión de Productos</h2>
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#nuevoProductoModal">+ Nuevo Producto</button>
+        </div>
+
+        <table id="tablaProductos" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th>Categoría</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($productos as $p): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($p->getNombre()) ?></td>
+                        <td>$<?= number_format($p->getPrecio(), 2) ?></td>
+                        <td><?= $p->getStock() ?></td>
+                        <td><?= htmlspecialchars($p->categoria_nombre ?? 'Sin categoría') ?></td>
+                        <td><?= $p->getEstado() ?></td>
+                        <td>
+                            <button class="btn btn-warning btn-sm btn-editar" data-id="<?= $p->getId() ?>">Editar</button>
+                            <a href="VistaProducto.php?eliminar=<?= $p->getId() ?>" onclick="return confirm('¿Desactivar este producto?');" class="btn btn-danger btn-sm">Eliminar</a>
+                        </td>
+                    </tr>
+                <?php endforeach ?>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal Nuevo Producto -->
+    <div class="modal fade" id="nuevoProductoModal" tabindex="-1">
+        <div class="modal-dialog">
+            <form method="POST" class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nuevo Producto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <?php if (!empty($errores)): ?>
+                        <div class="alert alert-danger">
+                            <ul>
+                                <?php foreach ($errores as $e): ?>
+                                    <li><?= htmlspecialchars($e) ?></li>
+                                <?php endforeach ?>
+                            </ul>
+                        </div>
+                    <?php endif ?>
+
+                    <div class="mb-3">
+                        <label>Nombre</label>
+                        <input type="text" name="nombre" class="form-control" value="<?= htmlspecialchars($valores['nombre'] ?? '') ?>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Descripción</label>
+                        <textarea name="descripcion" class="form-control"><?= htmlspecialchars($valores['descripcion'] ?? '') ?></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label>Precio</label>
+                        <input type="number" name="precio" class="form-control" value="<?= htmlspecialchars($valores['precio'] ?? '') ?>" step="0.01" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Stock</label>
+                        <input type="number" name="stock" class="form-control" value="<?= htmlspecialchars($valores['stock'] ?? '') ?>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Categoría</label>
+                        <select name="categoria_id" class="form-control" required>
+                            <option value="">Seleccione una categoría</option>
+                            <?php foreach ($categorias as $c): ?>
+                                <option value="<?= $c['id'] ?>" <?= ($valores['categoria_id'] ?? '') == $c['id'] ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($c['nombre']) ?>
+                                </option>
+                            <?php endforeach ?>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label>Activo</label>
+                        <select name="activo" class="form-control">
+                            <option value="1" <?= ($valores['activo'] ?? true) ? 'selected' : '' ?>>Sí</option>
+                            <option value="0" <?= isset($valores['activo']) && !$valores['activo'] ? 'selected' : '' ?>>No</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label>Estado</label>
+                        <select name="estado" class="form-control">
+                            <option value="disponible">Disponible</option>
+                            <option value="agotado">Agotado</option>
+                            <option value="bajo">Bajo</option>
+                            <option value="descontinuado">Descontinuado</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary">Guardar</button>
+                    <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Edición (dinámico con JS + fetch) -->
+    <div class="modal fade" id="modalEditarProducto" tabindex="-1">
+        <div class="modal-dialog">
+            <form id="formEditarProducto" class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Producto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="edit-id">
+                    <div class="mb-3">
+                        <label>Nombre</label>
+                        <input type="text" name="nombre" id="edit-nombre" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label>Descripción</label>
+                        <textarea name="descripcion" id="edit-descripcion" class="form-control"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label>Precio</label>
+                        <input type="number" name="precio" id="edit-precio" class="form-control" step="0.01">
+                    </div>
+                    <div class="mb-3">
+                        <label>Stock</label>
+                        <input type="number" name="stock" id="edit-stock" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label>Categoría</label>
+                        <select name="categoria_id" id="edit-categoria_id" class="form-control">
+                            <?php foreach ($categorias as $cat): ?>
+                                <option value="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['nombre']) ?></option>
+                            <?php endforeach ?>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label>Activo</label>
+                        <select name="activo" id="edit-activo" class="form-control">
+                            <option value="1">Sí</option>
+                            <option value="0">No</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label>Estado</label>
+                        <select name="estado" id="edit-estado" class="form-control">
+                            <option value="disponible">Disponible</option>
+                            <option value="agotado">Agotado</option>
+                            <option value="bajo">Bajo</option>
+                            <option value="descontinuado">Descontinuado</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" type="submit">Guardar cambios</button>
+                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Script de tabla -->
+    <script>
+        const datatable = new simpleDatatables.DataTable("#tablaProductos");
+    </script>
+</body>
+</html>

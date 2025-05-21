@@ -1,25 +1,33 @@
 <?php
-
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use SQLiteCloud\SQLiteCloudClient;
-use Dotenv\Dotenv;
+function conectarBD()
+{
+    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+    $dotenv->load();
 
-$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
-$dotenv->load();
+    $host = $_ENV['DB_HOST'];
+    $port = $_ENV['DB_PORT'];
+    $user = $_ENV['DB_USER'];
+    $pass = $_ENV['DB_PASS'];
+    $dbname = $_ENV['DB_NAME'];
 
-function conectarBD() {
-    static $sqlite = null;
-    if ($sqlite === null) {
-        try {
-            $DB_URL = $_ENV['DB_URL'] ?? throw new RuntimeException("DB_URL no definido");
-            $sqlite = new SQLiteCloudClient();
-            $sqlite->connectWithString($DB_URL);
-        } catch (Exception $e) {
-            error_log("[BD] Error de conexión: " . $e->getMessage());
-            throw $e; 
-        }
+    try {
+        $pdo = new PDO("pgsql:host=$host;port=$port;dbname=$dbname", $user, $pass);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        return $pdo;
+    } catch (PDOException $e) {
+        error_log("Error de conexión: " . $e->getMessage());
+        echo "Error al conectar: " . $e->getMessage();
+        return null;
     }
-    return $sqlite; 
 }
-?>
+
+
+$pdo = conectarBD();
+if ($pdo) {
+    echo "Conexión exitosa a la base de datos.";
+} else {
+    echo "Error al conectar a la base de datos.";
+}
+ 

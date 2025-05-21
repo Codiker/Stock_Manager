@@ -1,37 +1,46 @@
 <?php
-include_once __DIR__ . '/../model/Usuario.php';
-
+require_once __DIR__ . '/../model/Usuario.php';
 class Autenticacion
 {
     public static function login($email, $password, $recordarme)
-    { error_log("Intentando login con: $email");
+    {
         if (empty($email) || empty($password)) {
             return "Por favor, complete todos los campos.";
         }
+
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return "El correo electrónico no es válido.";
         }
 
-        $usuario = Usuario::buscarPorCorreo($email);
+        // Buscar el usuario por correo
+        $usuario = Usuario::buscarPorEmail($email);
+        
         if (!$usuario) {
             return "El correo electrónico no está registrado.";
         }
+
+        // Verificar la contraseña
         if (!password_verify($password, $usuario->getPassword())) {
             return "La contraseña es incorrecta.";
         }
+
+        // Verificar el estado del usuario
         if ($usuario->getEstado() != 1) {
             return "El usuario está inactivo, contacte al administrador.";
         }
 
+        // Iniciar sesión
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 
+        $_SESSION['usuario_id']    = $usuario->getId();
         $_SESSION['usuario_nombre'] = $usuario->getNombre();
         $_SESSION['usuario_rol']    = $usuario->getRolId();
 
+        // Si el usuario ha elegido "recordarme"
         if ($recordarme) {
-            setcookie('usuario_email', $usuario->getEmail(), time()+60*60*24*30, "/");
+            setcookie('usuario_email', $usuario->getEmail(), time() + (30 * 24 * 60 * 60), "/");
         }
 
         return true;
@@ -42,6 +51,7 @@ class Autenticacion
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
+
         session_unset();
         session_destroy();
         setcookie('usuario_email', '', time() - 3600, "/");
