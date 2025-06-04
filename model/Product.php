@@ -1,8 +1,5 @@
-Product.php
 <?php
-
 declare(strict_types=1);
-
 class Producto
 {
     private ?int $id;

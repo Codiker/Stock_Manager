@@ -8,7 +8,7 @@ class ProductRepository
 
     public function __construct()
     {
-        $this->db = conectarBD();
+        $this->db = conectarBD(); 
     }
 
     public function guardar(Producto $producto): bool
@@ -89,9 +89,9 @@ class ProductRepository
     }
 
     public function desactivarProducto(int $id): bool
-    {
+    { error_log("Desactivando producto con ID: $id");
         try {
-            $stmt = $this->db->prepare("UPDATE productos SET activo = 0 WHERE id = :id");
+            $stmt = $this->db->prepare("UPDATE productos SET activo =false WHERE id = :id");
             return $stmt->execute([':id' => $id]);
         } catch (PDOException $e) {
             error_log("Error al eliminar producto: " . $e->getMessage());
@@ -142,4 +142,43 @@ class ProductRepository
     public function filtrar (){
         
     }
+
+    public function listarActivos(int $limite = 100, int $offset = 0): array
+{
+    try {
+        $stmt = $this->db->prepare("
+            SELECT p.*, c.nombre AS categoria_nombre
+            FROM productos p
+            JOIN categorias c ON p.categoria_id = c.id
+            WHERE p.activo = true
+            LIMIT :limite OFFSET :offset
+        ");
+        $stmt->bindValue(':limite', $limite, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $productos = [];
+        while ($datos = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $producto = new Producto(
+                (int)$datos['id'],
+                $datos['nombre'],
+                $datos['descripcion'],
+                (float)$datos['precio'],
+                (int)$datos['stock'],
+                (int)$datos['categoria_id'],
+                (bool)$datos['activo'],
+                $datos['estado'],
+                $datos['created_at'],
+                $datos['updated_at'] ?? null
+            );
+            $producto->categoria_nombre = $datos['categoria_nombre'];
+            $productos[] = $producto;
+        }
+
+        return $productos;
+    } catch (PDOException $e) {
+        error_log("Error al listar productos activos: " . $e->getMessage());
+        return [];
+    }
+}
 }

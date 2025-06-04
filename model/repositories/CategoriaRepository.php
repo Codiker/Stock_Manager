@@ -10,7 +10,7 @@ class CategoriaRepository {
     }
 
     public function listarTodas() {
-        $stmt = $this->pdo->query("SELECT id, nombre FROM categorias");
+        $stmt = $this->pdo->query("SELECT id, nombre FROM categorias"); 
         $categorias = [];
         while ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $categorias[] = $fila;

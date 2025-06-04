@@ -5,14 +5,14 @@ if (!isset($_SESSION['usuario_id'])) {
     exit();
 }
 
-require_once __DIR__ . '/../../model/repository/ProductRepository.php';
-require_once __DIR__ . '/../../model/repository/CategoriaRepository.php';
+require_once __DIR__ . '../../../model/repositories/ProductRepository.php';
+require_once __DIR__ . '../../../model/repositories/CategoriaRepository.php';
 
 $repo = new ProductRepository();
 $categoriaRepo = new CategoriaRepository();
 
 $productos = $repo->listarActivos(); // Solo productos activos
-$categorias = $categoriaRepo->listarTodas();
+$categorias = $categoriaRepo->listarTodas(); 
 
 $errores = [];
 $valores = [];
@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $precio = floatval($_POST['precio'] ?? 0);
     $stock = intval($_POST['stock'] ?? 0);
     $categoria_id = intval($_POST['categoria_id'] ?? 0);
-    $activo = ($_POST['activo'] ?? '1') === '1';
+    $activo = ($_POST['activo'] ?? '1') === '1' ? true : false;
     $estado = $_POST['estado'] ?? 'disponible';
 
     $valores = compact('nombre', 'descripcion', 'precio', 'stock', 'categoria_id', 'activo', 'estado');
@@ -44,6 +44,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 }
+// Eliminación de producto
+if (isset($_GET['eliminar'])) {
+    $id = intval($_GET['eliminar']);
+    $resultado = $repo->desactivarProducto($id);
+    if ($resultado) {
+        header("Location: VistaProducto.php?success=Producto+desactivado+con+éxito");
+    } else {
+        header("Location: VistaProducto.php?error=Error+al+desactivar+producto");
+    }
+    exit();
+}
+
+    // Si hay errores, se muestran en el modal
+    if (!empty($errores)) {
+        $_SESSION['errores'] = $errores;
+        $_SESSION['valores'] = $valores;
+        header("Location: VistaProducto.php");
+        exit();
+    }
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -51,12 +70,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="utf-8" />
     <title>Gestión de Productos</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
-    <link href="public\templates\assets\css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="../js/alerts.js" defer></script>
+    <script src="assets/js/alerts.js" defer></script>
+    <script src="assets/js/scripts.js" defer></script>
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    
+ 
+    <link href="assets/css/styles.css" rel="stylesheet" />
+    
 </head>
 <body>
     <div class="container mt-5">
@@ -64,7 +88,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <h2>Gestión de Productos</h2>
             <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#nuevoProductoModal">+ Nuevo Producto</button>
         </div>
-
         <table id="tablaProductos" class="table table-bordered table-striped">
             <thead>
                 <tr>
@@ -228,5 +251,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script>
         const datatable = new simpleDatatables.DataTable("#tablaProductos");
     </script>
+    
 </body>
 </html>
