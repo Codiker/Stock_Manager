@@ -81,6 +81,30 @@ class Producto
         return $this->updated_at;
     }
 
+    public function setNombre($nombre) {
+        $this->nombre = $nombre;
+    }
+
+    public function setDescripcion($descripcion) {
+        $this->descripcion = $descripcion;
+    }
+
+    public function setPrecio($precio) {
+        $this->precio = $precio;
+    }
+
+    public function setStock($stock) {
+        $this->stock = $stock;
+    }
+
+    public function setCategoriaId($categoriaId) {
+        $this->categoria_id = $categoriaId;
+    }
+
+    public function setActivo($activo) {
+        $this->activo = $activo;
+    }
+
     public function setEstado(string $estado): void
     {
         $estadosValidos = ['disponible', 'agotado', 'bajo', 'descontinuado'];

@@ -4,7 +4,9 @@ if (!isset($_SESSION['usuario_id'])) {
     header("Location: login.php");
     exit();
 }
-
+$titulo = "Gestión de Productos";
+require 'header.php';
+require 'sidebar.php';
 require_once __DIR__ . '../../../model/repositories/ProductRepository.php';
 require_once __DIR__ . '../../../model/repositories/CategoriaRepository.php';
 
@@ -12,7 +14,7 @@ $repo = new ProductRepository();
 $categoriaRepo = new CategoriaRepository();
 
 $productos = $repo->listarActivos(); // Solo productos activos
-$categorias = $categoriaRepo->listarTodas(); 
+$categorias = $categoriaRepo->listarTodas();
 
 $errores = [];
 $valores = [];
@@ -32,8 +34,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $valores = compact('nombre', 'descripcion', 'precio', 'stock', 'categoria_id', 'activo', 'estado');
 
     $producto = new Producto(
-        null, $nombre, $descripcion, $precio,
-        $stock, $categoria_id, $activo, $estado
+        null,
+        $nombre,
+        $descripcion,
+        $precio,
+        $stock,
+        $categoria_id,
+        $activo,
+        $estado
     );
 
     $errores = $producto->validar();
@@ -56,16 +64,17 @@ if (isset($_GET['eliminar'])) {
     exit();
 }
 
-    // Si hay errores, se muestran en el modal
-    if (!empty($errores)) {
-        $_SESSION['errores'] = $errores;
-        $_SESSION['valores'] = $valores;
-        header("Location: VistaProducto.php");
-        exit();
-    }
+// Si hay errores, se muestran en el modal
+if (!empty($errores)) {
+    $_SESSION['errores'] = $errores;
+    $_SESSION['valores'] = $valores;
+    header("Location: VistaProducto.php");
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="utf-8" />
     <title>Gestión de Productos</title>
@@ -76,12 +85,13 @@ if (isset($_GET['eliminar'])) {
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    
-    
- 
+
+
+
     <link href="assets/css/styles.css" rel="stylesheet" />
-    
+
 </head>
+
 <body>
     <div class="container mt-5">
         <div class="d-flex justify-content-between mb-3">
@@ -251,6 +261,60 @@ if (isset($_GET['eliminar'])) {
     <script>
         const datatable = new simpleDatatables.DataTable("#tablaProductos");
     </script>
-    
+
+    <!-- Script de edición -->
+    <script>
+        document.querySelectorAll('.btn-editar').forEach(btn => {
+            btn.addEventListener('click', async function() {
+                const id = this.dataset.id;
+                const resp = await fetch('/../controller/productController.php?id=' + id);
+                const data = await resp.json();
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+                document.getElementById('edit-id').value = data.id;
+                document.getElementById('edit-nombre').value = data.nombre;
+                document.getElementById('edit-descripcion').value = data.descripcion;
+                document.getElementById('edit-precio').value = data.precio;
+                document.getElementById('edit-stock').value = data.stock;
+                document.getElementById('edit-categoria_id').value = data.categoria_id;
+                document.getElementById('edit-activo').value = data.activo ? '1' : '0';
+                document.getElementById('edit-estado').value = data.estado;
+                var modal = new bootstrap.Modal(document.getElementById('modalEditarProducto'));
+                modal.show();
+            });
+        });
+
+        document.getElementById('formEditarProducto').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const form = e.target;
+            const datos = {
+                id: form['id'].value,
+                nombre: form['nombre'].value,
+                descripcion: form['descripcion'].value,
+                precio: form['precio'].value,
+                stock: form['stock'].value,
+                categoria_id: form['categoria_id'].value,
+                activo: form['activo'].value,
+                estado: form['estado'].value
+            };
+            const resp = await fetch('updateProducto.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(datos)
+            });
+            const data = await resp.json();
+            if (data.success) {
+                location.reload(); // O actualizar solo la fila si prefieres
+            } else {
+                alert(data.error ? data.error : 'Error al actualizar');
+            }
+        });
+    </script>
+
 </body>
+
 </html>
