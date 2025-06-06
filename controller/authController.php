@@ -12,33 +12,32 @@ class Autenticacion
             return "El correo electrónico no es válido.";
         }
 
-        // Buscar el usuario por correo
+
         $usuario = Usuario::buscarPorEmail($email);
         
         if (!$usuario) {
             return "El correo electrónico no está registrado.";
         }
 
-        // Verificar la contraseña
         if (!password_verify($password, $usuario->getPassword())) {
             return "La contraseña es incorrecta.";
         }
 
-        // Verificar el estado del usuario
+
         if ($usuario->getEstado() != 1) {
             return "El usuario está inactivo, contacte al administrador.";
         }
 
-        // Iniciar sesión
+
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 
         $_SESSION['usuario_id']    = $usuario->getId();
         $_SESSION['usuario_nombre'] = $usuario->getNombre();
-        $_SESSION['usuario_rol']    = $usuario->getRolId();
+        $_SESSION['usuario_rol'] = $usuario->getRolId();
 
-        // Si el usuario ha elegido "recordarme"
+
         if ($recordarme) {
             setcookie('usuario_email', $usuario->getEmail(), time() + (30 * 24 * 60 * 60), "/");
         }

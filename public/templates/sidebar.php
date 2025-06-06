@@ -8,7 +8,7 @@
             <a href="categorias.php" class="list-group-item list-group-item-action">Reportes</a>
         </div>
         <!-- Opciones por rol -->
-        <?php if ($_SESSION['rol'] === 'admin'): ?>
+        <?php if ($_SESSION['usuario_rol'] === 1): ?>
             <a href="usuarios.php" class="list-group-item list-group-item-action">Usuarios</a>
         <?php endif ?>
         <a href="logout.php" class="list-group-item list-group-item-action text-danger">Salir</a>

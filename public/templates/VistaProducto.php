@@ -4,6 +4,7 @@ if (!isset($_SESSION['usuario_id'])) {
     header("Location: login.php");
     exit();
 }
+$usuario_rol = $_SESSION['usuario_rol'] ?? 0;
 $titulo = "Gestión de Productos";
 require 'header.php';
 require 'sidebar.php';
@@ -96,7 +97,9 @@ if (!empty($errores)) {
     <div class="container mt-5">
         <div class="d-flex justify-content-between mb-3">
             <h2>Gestión de Productos</h2>
-            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#nuevoProductoModal">+ Nuevo Producto</button>
+            <?php if ($usuario_rol == 1): ?>
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#nuevoProductoModal">+ Nuevo Producto</button>
+            <?php endif; ?>
         </div>
         <table id="tablaProductos" class="table table-bordered table-striped">
             <thead>
@@ -117,10 +120,12 @@ if (!empty($errores)) {
                         <td><?= $p->getStock() ?></td>
                         <td><?= htmlspecialchars($p->categoria_nombre ?? 'Sin categoría') ?></td>
                         <td><?= $p->getEstado() ?></td>
-                        <td>
-                            <button class="btn btn-warning btn-sm btn-editar" data-id="<?= $p->getId() ?>">Editar</button>
-                            <a href="VistaProducto.php?eliminar=<?= $p->getId() ?>" onclick="return confirm('¿Desactivar este producto?');" class="btn btn-danger btn-sm">Eliminar</a>
-                        </td>
+                        <?php if ($usuario_rol == 1) : ?>
+                            <td>
+                                <button class="btn btn-primary btn-editar" data-id="<?= $p->getId() ?>">Editar</button>
+                                <a href="?eliminar=<?= $p->getId() ?>" class="btn btn-danger">Eliminar</a>
+                            </td>
+                        <?php endif; ?>
                     </tr>
                 <?php endforeach ?>
             </tbody>
@@ -128,6 +133,7 @@ if (!empty($errores)) {
     </div>
 
     <!-- Modal Nuevo Producto -->
+    <?php if ($usuario_rol == 1): ?>
     <div class="modal fade" id="nuevoProductoModal" tabindex="-1">
         <div class="modal-dialog">
             <form method="POST" class="modal-content">
@@ -197,7 +203,9 @@ if (!empty($errores)) {
             </form>
         </div>
     </div>
+    <?php endif; ?>
 
+    <?php if ($usuario_rol == 1): ?>
     <!-- Modal Edición (dinámico con JS + fetch) -->
     <div class="modal fade" id="modalEditarProducto" tabindex="-1">
         <div class="modal-dialog">
@@ -257,11 +265,6 @@ if (!empty($errores)) {
         </div>
     </div>
 
-    <!-- Script de tabla -->
-    <script>
-        const datatable = new simpleDatatables.DataTable("#tablaProductos");
-    </script>
-
     <!-- Script de edición -->
     <script>
         document.querySelectorAll('.btn-editar').forEach(btn => {
@@ -313,6 +316,12 @@ if (!empty($errores)) {
                 alert(data.error ? data.error : 'Error al actualizar');
             }
         });
+    </script>
+    <?php endif; ?>
+
+    <!-- Script de tabla -->
+    <script>
+        const datatable = new simpleDatatables.DataTable("#tablaProductos");
     </script>
 
 </body>
