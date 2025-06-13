@@ -1,0 +1,8 @@
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+</IfModule>
+
+<FilesMatch "\.xlsx$">
+    ForceType application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+    Header set Content-Disposition "attachment"
+</FilesMatch>

@@ -143,20 +143,101 @@ class ProductRepository
         
     }
 
-    public function listarActivos(int $limite = 100, int $offset = 0): array
-{
-    try {
-        $stmt = $this->db->prepare("
-            SELECT p.*, c.nombre AS categoria_nombre
-            FROM productos p
-            JOIN categorias c ON p.categoria_id = c.id
-            WHERE p.activo = true
-            LIMIT :limite OFFSET :offset
-        ");
-        $stmt->bindValue(':limite', $limite, PDO::PARAM_INT);
-        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-        $stmt->execute();
+    public function listarActivos(int $limite = 100, int $offset = 0): array {
+        try {
+            $stmt = $this->db->prepare("
+                SELECT p.*, c.nombre AS categoria_nombre
+                FROM productos p
+                JOIN categorias c ON p.categoria_id = c.id
+                WHERE p.activo = true
+                ORDER BY p.id
+                LIMIT :limite OFFSET :offset
+            ");
+            $stmt->bindValue(':limite', $limite, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            return $this->mapearProductos($stmt);
+        } catch (PDOException $e) {
+            error_log("Error al listar productos activos: " . $e->getMessage());
+            return [];
+        }
+    }
 
+    public function contarTotalProductos(): int {
+        try {
+            $stmt = $this->db->query("SELECT COUNT(*) FROM productos WHERE activo = true");
+            return (int) $stmt->fetchColumn();
+        } catch (PDOException $e) {
+            error_log("Error al contar productos: " . $e->getMessage());
+            return 0;
+        }
+    }
+
+    public function contarProductosAgotados(): int {
+        try {
+            $stmt = $this->db->query("SELECT COUNT(*) FROM productos WHERE stock = 0 AND activo = true");
+            return (int) $stmt->fetchColumn();
+        } catch (PDOException $e) {
+            error_log("Error al contar productos agotados: " . $e->getMessage());
+            return 0;
+        }
+    }
+
+    public function contarProductosBajoStock(): int {
+        try {
+            $stmt = $this->db->query("SELECT COUNT(*) FROM productos WHERE stock <= 10 AND activo = true");
+            return (int) $stmt->fetchColumn();
+        } catch (PDOException $e) {
+            error_log("Error al contar productos bajo stock: " . $e->getMessage());
+            return 0;
+        }
+    }
+
+    public function calcularValorTotalInventario(): float {
+        try {
+            $stmt = $this->db->query("SELECT SUM(precio * stock) FROM productos WHERE activo = true");
+            return (float) $stmt->fetchColumn();
+        } catch (PDOException $e) {
+            error_log("Error al calcular valor total: " . $e->getMessage());
+            return 0.0;
+        }
+    }
+
+    public function obtenerProductosAgotados(): array {
+        try {
+            $stmt = $this->db->prepare("
+                SELECT p.*, c.nombre AS categoria_nombre
+                FROM productos p
+                JOIN categorias c ON p.categoria_id = c.id
+                WHERE p.stock = 0 AND p.activo = true
+            ");
+            $stmt->execute();
+            return $this->mapearProductos($stmt);
+        } catch (PDOException $e) {
+            error_log("Error al obtener productos agotados: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    public function obtenerProductosBajoStock(): array {
+        try {
+            $stmt = $this->db->prepare("
+                SELECT p.*, c.nombre AS categoria_nombre
+                FROM productos p
+                JOIN categorias c ON p.categoria_id = c.id
+                WHERE p.stock <= 10 AND p.stock > 0 AND p.activo = true
+                ORDER BY p.stock ASC
+            ");
+            $stmt->execute();
+            return $this->mapearProductos($stmt);
+        } catch (PDOException $e) {
+            error_log("Error al obtener productos bajo stock: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    private function mapearProductos($stmt): array {
         $productos = [];
         while ($datos = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $producto = new Producto(
@@ -174,11 +255,6 @@ class ProductRepository
             $producto->categoria_nombre = $datos['categoria_nombre'];
             $productos[] = $producto;
         }
-
         return $productos;
-    } catch (PDOException $e) {
-        error_log("Error al listar productos activos: " . $e->getMessage());
-        return [];
     }
-}
 }
