@@ -4,6 +4,7 @@ require_once __DIR__ . '../../../controller/authController.php';
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
+$mensaje = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'] ?? '';
@@ -19,83 +20,72 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $mensaje = $resultado;
     }
 }
-
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="es">
 <head>
     <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>Iniciar Sesion</title>
-    <link href="css/styles.css" rel="stylesheet" />
-    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-</head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Login - Inventarios</title>
 
-<body class="bg-primary">
-    <div id="layoutAuthentication">
-        <div id="layoutAuthentication_content">
-            <main>
-                <div class="container">
-                    <div class="row justify-content-center">
-                        <div class="col-lg-5">
-                            <div class="card shadow-lg border-0 rounded-lg mt-5">
-                                <div class="card-header">
-                                    <h3 class="text-center font-weight-light my-4">Iniciar Sesion</h3>
-                                </div>
-                                <div class="card-body">
-                                    <form method="POST">
-                                        <div class="form-floating mb-3">
-                                        <input class="form-control" id="inputEmail" name="email" type="email" placeholder="name@example.com" required />
-                                            <label for="inputEmail">Correo electrónico</label>
-                                        </div>
-                                        <div class="form-floating mb-3">
-                                        <input class="form-control" id="inputPassword" name="password" type="password" placeholder="Password" required />
-                                            <label for="inputPassword">Contraseña</label>
-                                        </div>
-                                        <div class="form-check mb-3">
-                                        <input class="form-check-input" id="inputRememberPassword" name="recordarme" type="checkbox" value="1" />
-                                            <label class="form-check-label" for="inputRememberPassword">Recordar Contraseña</label>
-                                        </div>
-                                        <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
-                                            <a class="small" href="password.html">Olvidaste la contraseña?</a>
-                                            <button type="submit" class="btn btn-primary">Ingresar</button>
-                                        </div>
-                                    </form>
-                                </div>
-                                <div class="card-footer text-center py-3">
-                                    
-                                </div>
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Estilos personalizados -->
+    <link href="assets/css/login.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container">
+        <div class="row justify-content-center align-items-center min-vh-100">
+            <div class="col-md-6 col-lg-5">
+                <div class="card shadow login-card">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h4 class="mb-0"><i class="fas fa-boxes me-2"></i>Inventarios</h4>
+                        <small>Iniciar sesión</small>
+                    </div>
+                    <div class="card-body">
+                        <?php if (!empty($mensaje)): ?>
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <?= htmlspecialchars($mensaje) ?>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
-                        </div>
+                        <?php endif; ?>
+
+                        <form id="loginForm" method="POST" novalidate>
+                            <div class="form-floating mb-3">
+                                <input type="email" class="form-control" id="inputEmail" name="email" placeholder="correo@ejemplo.com" required autofocus>
+                                <label for="inputEmail"><i class="fas fa-envelope me-2"></i>Correo Electrónico</label>
+                            </div>
+
+                            <div class="form-floating mb-3 position-relative">
+                                <input type="password" class="form-control" id="inputPassword" name="password" placeholder="Contraseña" required>
+                                <label for="inputPassword"><i class="fas fa-lock me-2"></i>Contraseña</label>
+                            </div>
+
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="inputRememberPassword" name="recordarme">
+                                <label class="form-check-label" for="inputRememberPassword">Recordarme</label>
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">
+                                    Ingresar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-footer text-center text-muted small">
+                        &copy; <?= date('Y') ?> Sistema de Inventarios
                     </div>
                 </div>
-                <?php if (!empty($mensaje)): ?>
-    <div class="alert alert-danger mt-3"><?= $mensaje ?></div>
-<?php endif; ?>
-            </main>
-        </div>
-        <div id="layoutAuthentication_footer">
-            <footer class="py-4 bg-light mt-auto">
-                <div class="container-fluid px-4">
-                    <div class="d-flex align-items-center justify-content-between small">
-                        <div class="text-muted">Copyright &copy; Your Website 2025</div>
-                        <div>
-                            <a href="#">Privacy Policy</a>
-                            &middot;
-                            <a href="#">Terms &amp; Conditions</a>
-                        </div>
-                    </div>
-                </div>
-            </footer>
+            </div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-    <script src="js/scripts.js"></script>
-</body>
 
+    <!-- JS -->
+    <script src="assets/js/login.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>

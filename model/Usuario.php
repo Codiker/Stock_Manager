@@ -10,14 +10,15 @@ class Usuario
     private $rol_id;
     private $estado;
 
-    public function __construct($id = null, $nombre, $email, $password, $rol_id, $estado)
+    public function __construct($nombre, $email, $password, $rol_id, $estado, $id = null)
     {
-        $this->id = $id;
+       
         $this->nombre = $nombre;
         $this->email = $email;
         $this->password = $password;
         $this->rol_id = $rol_id;
         $this->estado = $estado;
+        $this->id = $id;
     }
 
     // Getters
@@ -40,12 +41,12 @@ class Usuario
             if (!$datos) return null;
 
             return new Usuario(
-                $datos['id'],
                 $datos['nombre'],
                 $datos['email'],
                 $datos['password'],
                 $datos['rol_id'],
-                $datos['estado']
+                $datos['estado'],
+                $datos['id']
             );
         } catch (PDOException $e) {
             error_log("Error en buscarPorEmail: " . $e->getMessage());

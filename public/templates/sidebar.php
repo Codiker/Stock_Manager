@@ -1,17 +1,43 @@
-<?php ?>
-<aside class="bg-light border-end" style="width:220px; min-height:100vh;">
-    <div class="list-group list-group-flush">
-        <a href="dashboard.php" class="list-group-item list-group-item-action">Dashboard</a>
-        <a href="VistaProducto.php" class="list-group-item list-group-item-action">Productos</a>
-        <a href="categorias.php" class="list-group-item list-group-item-action">Categorías</a>
-        <div>
-            <a href="categorias.php" class="list-group-item list-group-item-action">Reportes</a>
+<div id="layoutSidenav_nav">
+    <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+        <div class="sb-sidenav-menu">
+            <div class="nav">
+                <div class="sb-sidenav-menu-heading">General</div>
+                <a class="nav-link" href="dashboard.php">
+                    <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div> Dashboard
+                </a>
+                <div class="sb-sidenav-menu-heading">Gestión</div>
+                <a class="nav-link" href="VistaProducto.php">
+                    <div class="sb-nav-link-icon"><i class="fas fa-boxes"></i></div> Productos
+                </a>
+                <a class="nav-link" href="categorias.php">
+                    <div class="sb-nav-link-icon"><i class="fas fa-tags"></i></div> Categorías
+                </a>
+                <a class="nav-link" href="reportes.php">
+                    <div class="sb-nav-link-icon"><i class="fas fa-chart-line"></i></div> Reportes
+                </a>
+                <?php if ($_SESSION['usuario_rol'] === 1): ?>
+                    <a class="nav-link" href="usuarios.php">
+                        <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div> Usuarios
+                    </a>
+                <?php endif; ?>
+                <a class="nav-link text-danger" href="logout.php">
+                    <div class="sb-nav-link-icon"><i class="fas fa-sign-out-alt"></i></div> Salir
+                </a>
+            </div>
         </div>
-        <!-- Opciones por rol -->
-        <?php if ($_SESSION['usuario_rol'] === 1): ?>
-            <a href="usuarios.php" class="list-group-item list-group-item-action">Usuarios</a>
-        <?php endif ?>
-        <a href="logout.php" class="list-group-item list-group-item-action text-danger">Salir</a>
-    </div>
-</aside>
-<div class="flex-grow-1 p-4">
+        <div class="sb-sidenav-footer">
+            <div class="small">Conectado como:</div>
+            <?php
+            if ($_SESSION['usuario_rol'] === 1) {
+                echo '<span class="text-success">Administrador</span>';
+            } elseif ($_SESSION['usuario_rol'] === 2) {
+                echo '<span class="text-info">Usuario</span>';
+            } else {
+                echo '<span class="text-secondary">Invitado</span>';
+            }
+            ?>
+            <?= $_SESSION['usuario_nombre'] ?? 'Usuario' ?>
+        </div>
+    </nav>
+</div>

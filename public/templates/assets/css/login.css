@@ -1,0 +1,370 @@
+:root {
+    --primary-color: #4361ee;
+    --primary-dark: #3a56d4;
+    --secondary-color: #3f37c9;
+    --accent-color: #4895ef;
+    --light-color: #f8f9fa;
+    --dark-color: #212529;
+    --success-color: #4bb543;
+    --error-color: #ff3333;
+    --warning-color: #f0ad4e;
+    --border-radius: 8px;
+    --box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    color: var(--dark-color);
+}
+
+#layoutAuthentication {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+#layoutAuthentication_content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.card {
+    border: none;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+    width: 100%;
+    max-width: 450px;
+    transition: var(--transition);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+    background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 1.5rem;
+    text-align: center;
+    border-bottom: none;
+}
+
+.card-header h3 {
+    font-weight: 600;
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.card-body {
+    padding: 2rem;
+    background-color: white;
+}
+
+.form-floating {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.form-floating label {
+    color: #6c757d;
+    transition: var(--transition);
+}
+
+.form-control {
+    height: 50px;
+    border-radius: var(--border-radius);
+    border: 1px solid #e0e0e0;
+    padding: 1rem 1rem;
+    font-size: 1rem;
+    transition: var(--transition);
+    background-color: #f8f9fa;
+}
+
+.form-control:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
+    background-color: white;
+}
+
+.form-control:focus + label {
+    color: var(--primary-color);
+    transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+}
+
+.form-check {
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.form-check-input {
+    width: 18px;
+    height: 18px;
+    margin-right: 0.5rem;
+    cursor: pointer;
+}
+
+.form-check-input:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.form-check-label {
+    cursor: pointer;
+    user-select: none;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    transition: var(--transition);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.d-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.small {
+    font-size: 0.875rem;
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.small:hover {
+    color: var(--secondary-color);
+    text-decoration: underline;
+}
+
+.alert {
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--border-radius);
+    margin-top: 1rem;
+    text-align: center;
+    max-width: 450px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.alert-danger {
+    background-color: rgba(255, 51, 51, 0.1);
+    border: 1px solid var(--error-color);
+    color: var(--error-color);
+}
+
+#layoutAuthentication_footer {
+    background-color: white;
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.card {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    .card {
+        margin: 1rem;
+    }
+    
+    .card-body {
+        padding: 1.5rem;
+    }
+    
+    .d-flex {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .btn-primary {
+        width: 100%;
+    }
+}
+
+/* Efecto de carga */
+.loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.7);
+    z-index: 10;
+    border-radius: var(--border-radius);
+}
+
+.spinner {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 11;
+}
+
+.loading .spinner {
+    display: block;
+}
+
+.spinner-border {
+    width: 2rem;
+    height: 2rem;
+    border-width: 0.2em;
+    color: var(--primary-color);
+}
+/* Asegura que los labels flotantes funcionen */
+.form-floating>label {
+    transform-origin: 0 0;
+    opacity: 0.65;
+    padding: 1rem 1rem;
+}
+
+.form-floating>.form-control:focus~label,
+.form-floating>.form-control:not(:placeholder-shown)~label {
+    transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+    opacity: 1;
+    color: var(--primary-color);
+}
+
+/* Ajustes específicos para los placeholders */
+.form-control::placeholder {
+    color: transparent;
+}
+
+/* Mejora el checkbox */
+.form-check-input {
+    margin-top: 0;
+}
+
+/* Contenedor principal para PC */
+@media (min-width: 992px) {
+    #layoutAuthentication_content {
+        padding: 2rem 0;
+    }
+    
+    .card {
+        max-width: 450px;
+        margin: 0 auto;
+    }
+    
+    .form-control {
+        padding: 1.2rem 1rem;
+        font-size: 1.05rem;
+    }
+    
+    .btn-primary {
+        padding: 0.8rem 2rem;
+        font-size: 1.05rem;
+    }
+    
+    .card-header h3 {
+        font-size: 1.8rem;
+    }
+    
+    .card-header p {
+        font-size: 1.1rem;
+    }
+}
+
+/* Ajustes específicos para el footer */
+#layoutAuthentication_footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Centrado vertical perfecto */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+#layoutAuthentication {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Ajustes para el formulario */
+.card-body {
+    padding: 2.5rem;
+}
+
+.form-floating {
+    margin-bottom: 1.8rem;
+}
+
+/* Corrección para el enlace "¿Olvidaste tu contraseña?" */
+.small {
+    font-size: 0.9rem;
+}
+
+/* Estilos generales para la tarjeta */
+.login-card {
+    max-width: 450px;
+    margin: auto;
+    transition: transform 0.3s ease;
+    perspective: 1000px;
+}
+
+/* Efecto hover en escritorio */
+@media (min-width: 992px) {
+    .login-card:hover {
+        transform: scale(1.01);
+    }
+}
+
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    color: #6c757d;
+    cursor: pointer;
+}
+
