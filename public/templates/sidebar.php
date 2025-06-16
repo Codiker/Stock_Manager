@@ -25,7 +25,7 @@
                     <div class="sb-nav-link-icon"><i class="fas fa-sign-out-alt"></i></div> Salir
                 </a>
             </div>
-        </div>
+        </div> 
         <div class="sb-sidenav-footer">
             <div class="small">Conectado como:</div>
             <?php

@@ -29,7 +29,6 @@ $usuario_rol = $_SESSION['usuario_rol'] ?? 0; // 1: Admin, 2: Usuario común
                     <i class="fas fa-user fa-fw"></i>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item" href="#">Perfil</a></li>
                     <li><a class="dropdown-item" href="logout.php">Cerrar sesión</a></li>
                 </ul>
             </li>

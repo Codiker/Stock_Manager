@@ -40,7 +40,7 @@ if (isset($_POST['generar_pdf'])) {
     <meta charset="UTF-8">
     <title>Reportes - StockManager</title>
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
-    <link href="assets/css/styles.css" rel="stylesheet" />
+    <link href="assets/css/reportes.css" rel="stylesheet" />
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>

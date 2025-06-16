@@ -1,0 +1,299 @@
+/* categorias.css - Estilos para Gestión de Categorías */
+
+:root {
+    --primary-color: #4361ee;
+    --primary-dark: #3a56d4;
+    --secondary-color: #3f37c9;
+    --accent-color: #4895ef;
+    --light-color: #f8f9fa;
+    --dark-color: #212529;
+    --gray-light: #e9ecef;
+    --gray-medium: #ced4da;
+    --success-color: #4bb543;
+    --error-color: #ff3333;
+    --warning-color: #f0ad4e;
+    --border-radius: 8px;
+    --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --transition: all 0.3s ease;
+}
+
+/* Estructura Principal */
+body {
+    background-color: #f5f7fa;
+    color: var(--dark-color);
+    font-family: 'Segoe UI', 'Roboto', sans-serif;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+h2 {
+    color: var(--primary-dark);
+    font-weight: 600;
+    margin-bottom: 2rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--accent-color);
+}
+
+/* Alertas */
+.alert {
+    border-radius: var(--border-radius);
+    padding: 1rem 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+}
+
+.alert-success {
+    background-color: rgba(75, 181, 67, 0.15);
+    border-left: 4px solid var(--success-color);
+    color: #2a652a;
+}
+
+.alert-danger {
+    background-color: rgba(255, 51, 51, 0.1);
+    border-left: 4px solid var(--error-color);
+    color: #cc0000;
+}
+
+.alert ul {
+    margin-bottom: 0;
+    padding-left: 1.5rem;
+}
+
+/* Formulario */
+form {
+    background: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    margin-bottom: 3rem;
+}
+
+.mb-3 {
+    margin-bottom: 1.5rem !important;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--primary-dark);
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--gray-medium);
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+    font-size: 1rem;
+}
+
+.form-control:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 0.2rem rgba(72, 149, 239, 0.25);
+    outline: none;
+}
+
+textarea.form-control {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* Botones */
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    transition: var(--transition);
+    cursor: pointer;
+    border: none;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.875rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(67, 97, 238, 0.3);
+}
+
+.btn-secondary {
+    background-color: var(--gray-light);
+    color: var(--dark-color);
+}
+
+.btn-secondary:hover {
+    background-color: var(--gray-medium);
+    transform: translateY(-2px);
+}
+
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+}
+
+.btn-warning {
+    background-color: var(--warning-color);
+    color: white;
+}
+
+.btn-danger {
+    background-color: var(--error-color);
+    color: white;
+}
+
+.btn + .btn {
+    margin-left: 0.75rem;
+}
+
+/* Tabla de Categorías */
+.table {
+    width: 100%;
+    background: white;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--box-shadow);
+    margin-bottom: 2rem;
+}
+
+.table thead {
+    background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+    color: white;
+}
+
+.table th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: 0.5px;
+}
+
+.table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--gray-light);
+    vertical-align: middle;
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(72, 149, 239, 0.05);
+}
+
+/* DataTables Customization */
+.dataTable-wrapper {
+    margin-top: 1.5rem;
+}
+
+.dataTable-top,
+.dataTable-bottom {
+    padding: 0.75rem 0;
+}
+
+.dataTable-input {
+    border: 1px solid var(--gray-medium);
+    border-radius: var(--border-radius);
+    padding: 0.5rem 1rem;
+}
+
+.dataTable-selector {
+    border: 1px solid var(--gray-medium);
+    border-radius: var(--border-radius);
+    padding: 0.5rem;
+}
+
+.dataTable-pagination a {
+    color: var(--primary-color);
+    border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 0.25rem;
+    transition: var(--transition);
+}
+
+.dataTable-pagination a:hover {
+    background-color: rgba(67, 97, 238, 0.1);
+}
+
+.dataTable-pagination a.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    form {
+        padding: 1.5rem;
+    }
+    
+    .table-responsive {
+        overflow-x: auto;
+    }
+    
+    .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .btn + .btn {
+        margin-left: 0;
+    }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.table {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Efectos de hover para botones de acción */
+.btn-warning:hover {
+    background-color: #ec971f;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(240, 173, 78, 0.3);
+}
+
+.btn-danger:hover {
+    background-color: #d9534f;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 51, 51, 0.3);
+}
+
+/* Estilo para cuando no hay datos */
+.dataTable-empty {
+    text-align: center;
+    padding: 2rem;
+    color: #6c757d;
+    font-style: italic;
+}
