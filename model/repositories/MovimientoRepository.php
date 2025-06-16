@@ -41,4 +41,25 @@ class MovimientoRepository
         }
         return $movimientos;
     }
+    /**
+     * Obtiene las ventas de los últimos N días
+     * @param int $dias Número de días a consultar
+     * @return array Array asociativo con la fecha como clave y el total de ventas como valor
+     */
+    public function obtenerVentasUltimosDias($dias = 7)
+    {
+        $stmt = $this->db->prepare("
+        SELECT DATE(fecha) as dia, COUNT(*) as total
+        FROM movimientos
+        WHERE tipo = 'venta' AND fecha >= CURRENT_DATE - INTERVAL ':dias days'
+        GROUP BY dia
+        ORDER BY dia ASC
+    ");
+        $stmt->execute(['dias' => $dias]);
+        $result = [];
+        while ($row = $stmt->fetch()) {
+            $result[$row['dia']] = (int)$row['total'];
+        }
+        return $result;
+    }
 }

@@ -8,6 +8,7 @@ $usuario_rol = $_SESSION['usuario_rol'] ?? 0; // 1: Admin, 2: Usuario común
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -16,6 +17,7 @@ $usuario_rol = $_SESSION['usuario_rol'] ?? 0; // 1: Admin, 2: Usuario común
     <link href="assets/css/styles.css" rel="stylesheet" />
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
 </head>
+
 <body class="sb-nav-fixed">
     <!-- BARRA SUPERIOR -->
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
@@ -57,15 +59,15 @@ $usuario_rol = $_SESSION['usuario_rol'] ?? 0; // 1: Admin, 2: Usuario común
                             <div class="sb-nav-link-icon"><i class="fas fa-chart-line"></i></div> Reportes
                         </a>
                         <?php if ($usuario_rol == 1): ?>
-                        <a class="nav-link" href="usuarios.php">
-                            <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div> Usuarios
-                        </a>
+                            <a class="nav-link" href="usuarios.php">
+                                <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div> Usuarios
+                            </a>
                         <?php endif; ?>
                     </div>
                 </div>
                 <div class="sb-sidenav-footer">
                     <div class="small">Conectado como:</div>
-                   <?php if ($usuario_rol == 1) {
+                    <?php if ($usuario_rol == 1) {
                         echo '<span class="text-success">Administrador</span>';
                     } elseif ($usuario_rol == 2) {
                         echo '<span class="text-info">Usuario</span>';
@@ -89,37 +91,33 @@ $usuario_rol = $_SESSION['usuario_rol'] ?? 0; // 1: Admin, 2: Usuario común
                 <div class="row">
                     <div class="col-md-3">
                         <div class="card bg-primary text-white mb-4">
-                            <div class="card-body">Categorías registradas</div>
-                            <div class="card-footer d-flex justify-content-between align-items-center">
-                                <a class="small text-white stretched-link" href="categorias.php">Ver más</a>
-                                <div><i class="fas fa-angle-right"></i></div>
+                            <div class="card-body">
+                                <span id="totalCategorias">-</span>
+                                <div>Categorías registradas</div>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="card bg-warning text-white mb-4">
-                            <div class="card-body">Stock Bajo (ej: 10)</div>
-                            <div class="card-footer d-flex justify-content-between align-items-center">
-                                <a class="small text-white stretched-link" href="#">Detalles</a>
-                                <div><i class="fas fa-angle-right"></i></div>
+                            <div class="card-body">
+                                <span id="productosBajoStock">-</span>
+                                <div>Stock Bajo (ej: 10)</div>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="card bg-success text-white mb-4">
-                            <div class="card-body">Ventas hoy (ej: $150.000)</div>
-                            <div class="card-footer d-flex justify-content-between align-items-center">
-                                <a class="small text-white stretched-link" href="#">Detalles</a>
-                                <div><i class="fas fa-angle-right"></i></div>
+                            <div class="card-body">
+                                <span id="ventasHoy">-</span>
+                                <div>Ventas hoy (ej: $150.000)</div>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="card bg-danger text-white mb-4">
-                            <div class="card-body">Productos agotados</div>
-                            <div class="card-footer d-flex justify-content-between align-items-center">
-                                <a class="small text-white stretched-link" href="#">Detalles</a>
-                                <div><i class="fas fa-angle-right"></i></div>
+                            <div class="card-body">
+                                <span id="productosAgotados">-</span>
+                                <div>Productos agotados</div>
                             </div>
                         </div>
                     </div>
@@ -135,11 +133,24 @@ $usuario_rol = $_SESSION['usuario_rol'] ?? 0; // 1: Admin, 2: Usuario común
                     </div>
                     <div class="col-xl-6">
                         <div class="card mb-4">
-                            <div class="card-header"><i class="fas fa-chart-bar me-1"></i> Ventas últimos 6 meses</div>
+                            <div class="card-header"><i class="fas fa-chart-bar me-1"></i> Productos por Categoría</div>
                             <div class="card-body"><canvas id="myBarChart" width="100%" height="40"></canvas></div>
                         </div>
                     </div>
                 </div>
+                <h2 class="mt-5">Productos Añadidos Recientemente</h2>
+                <table id="tablaRecientes" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Precio</th>
+                            <th>Stock</th>
+                            <th>Categoría</th>
+                            <th>Fecha de Alta</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </main>
             <footer class="py-4 bg-light mt-auto">
                 <div class="container-fluid text-center">
@@ -150,10 +161,27 @@ $usuario_rol = $_SESSION['usuario_rol'] ?? 0; // 1: Admin, 2: Usuario común
     </div>
 
     <!-- SCRIPTS -->
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="assets/js/dashboard-charts.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js"></script>
+    <script src="assets/js/dashboard-table-recientes.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/scripts.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="assets/js/chart-area-demo.js"></script>
-    <script src="assets/js/chart-bar-demo.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('../estadisticasDashboard.php')
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('totalCategorias').textContent = data.total_categorias ?? '-';
+                    document.getElementById('productosBajoStock').textContent = data.productos_bajo_stock ?? '-';
+                    document.getElementById('productosAgotados').textContent = data.productos_agotados ?? '-';
+                    // Si tienes ventas hoy, agrégalo aquí. Por ahora, muestra 0.
+                    document.getElementById('ventasHoy').textContent = data.ventas_hoy ?? '0';
+                });
+        });
+    </script>
 </body>
+
 </html>

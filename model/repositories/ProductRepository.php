@@ -8,7 +8,7 @@ class ProductRepository
 
     public function __construct()
     {
-        $this->db = conectarBD(); 
+        $this->db = conectarBD();
     }
 
     public function guardar(Producto $producto): bool
@@ -53,7 +53,6 @@ class ProductRepository
 
             if (!$producto->getId() && $result) {
                 $productoId = (int)$this->db->lastInsertId();
-                
             }
 
             return $result;
@@ -89,25 +88,27 @@ class ProductRepository
     }
 
     public function desactivarProducto(int $id): bool
-    { error_log("Desactivando producto con ID: $id");
+    {
+        error_log("Desactivando producto con ID: $id");
         try {
             $stmt = $this->db->prepare("UPDATE productos SET activo =false WHERE id = :id");
             return $stmt->execute([':id' => $id]);
         } catch (PDOException $e) {
             error_log("Error al eliminar producto: " . $e->getMessage());
             return false;
-        } 
+        }
     }
 
     public function listarTodos(int $limite = 100, int $offset = 0): array
     {
         try {
             $stmt = $this->db->prepare("
-            SELECT p.*, c.nombre AS categoria_nombre
-            FROM productos p
-            JOIN categorias c ON p.categoria_id = c.id
-            LIMIT :limite OFFSET :offset
-        ");
+                SELECT p.*, c.nombre AS categoria_nombre
+                FROM productos p
+                JOIN categorias c ON p.categoria_id = c.id
+                ORDER BY p.created_at DESC
+                LIMIT :limite OFFSET :offset
+            ");
             $stmt->bindValue(':limite', $limite, PDO::PARAM_INT);
             $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
             $stmt->execute();
@@ -126,9 +127,7 @@ class ProductRepository
                     $datos['created_at'],
                     $datos['updated_at'] ?? null
                 );
-  
                 $producto->categoria_nombre = $datos['categoria_nombre'];
-
                 $productos[] = $producto;
             }
 
@@ -139,11 +138,10 @@ class ProductRepository
         }
     }
 
-    public function filtrar (){
-        
-    }
+    public function filtrar() {}
 
-    public function listarActivos(int $limite = 100, int $offset = 0): array {
+    public function listarActivos(int $limite = 100, int $offset = 0): array
+    {
         try {
             $stmt = $this->db->prepare("
                 SELECT p.*, c.nombre AS categoria_nombre
@@ -156,7 +154,7 @@ class ProductRepository
             $stmt->bindValue(':limite', $limite, PDO::PARAM_INT);
             $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
             $stmt->execute();
-            
+
             return $this->mapearProductos($stmt);
         } catch (PDOException $e) {
             error_log("Error al listar productos activos: " . $e->getMessage());
@@ -164,7 +162,8 @@ class ProductRepository
         }
     }
 
-    public function contarTotalProductos(): int {
+    public function contarTotalProductos(): int
+    {
         try {
             $stmt = $this->db->query("SELECT COUNT(*) FROM productos WHERE activo = true");
             return (int) $stmt->fetchColumn();
@@ -174,7 +173,8 @@ class ProductRepository
         }
     }
 
-    public function contarProductosAgotados(): int {
+    public function contarProductosAgotados(): int
+    {
         try {
             $stmt = $this->db->query("SELECT COUNT(*) FROM productos WHERE stock = 0 AND activo = true");
             return (int) $stmt->fetchColumn();
@@ -184,7 +184,8 @@ class ProductRepository
         }
     }
 
-    public function contarProductosBajoStock(): int {
+    public function contarProductosBajoStock(): int
+    {
         try {
             $stmt = $this->db->query("SELECT COUNT(*) FROM productos WHERE stock <= 10 AND activo = true");
             return (int) $stmt->fetchColumn();
@@ -194,7 +195,8 @@ class ProductRepository
         }
     }
 
-    public function calcularValorTotalInventario(): float {
+    public function calcularValorTotalInventario(): float
+    {
         try {
             $stmt = $this->db->query("SELECT SUM(precio * stock) FROM productos WHERE activo = true");
             return (float) $stmt->fetchColumn();
@@ -204,7 +206,8 @@ class ProductRepository
         }
     }
 
-    public function obtenerProductosAgotados(): array {
+    public function obtenerProductosAgotados(): array
+    {
         try {
             $stmt = $this->db->prepare("
                 SELECT p.*, c.nombre AS categoria_nombre
@@ -220,7 +223,8 @@ class ProductRepository
         }
     }
 
-    public function obtenerProductosBajoStock(): array {
+    public function obtenerProductosBajoStock(): array
+    {
         try {
             $stmt = $this->db->prepare("
                 SELECT p.*, c.nombre AS categoria_nombre
@@ -237,7 +241,8 @@ class ProductRepository
         }
     }
 
-    private function mapearProductos($stmt): array {
+    private function mapearProductos($stmt): array
+    {
         $productos = [];
         while ($datos = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $producto = new Producto(
@@ -256,5 +261,20 @@ class ProductRepository
             $productos[] = $producto;
         }
         return $productos;
+    }
+
+    public function contarProductosPorCategoria()
+    {
+        $stmt = $this->db->query("
+        SELECT c.nombre as categoria, COUNT(p.id) as total
+        FROM productos p
+        LEFT JOIN categorias c ON p.categoria_id = c.id
+        GROUP BY c.nombre
+    ");
+        $result = [];
+        while ($row = $stmt->fetch()) {
+            $result[$row['categoria'] ?? 'Sin categoría'] = (int)$row['total'];
+        }
+        return $result;
     }
 }

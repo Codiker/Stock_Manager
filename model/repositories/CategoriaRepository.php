@@ -17,4 +17,9 @@ class CategoriaRepository {
         }
         return $categorias;
     }
+    
+    public function contarCategorias(): int {
+    $stmt = $this->pdo->query("SELECT COUNT(*) FROM categorias");
+    return (int) $stmt->fetchColumn();
+}
 }
