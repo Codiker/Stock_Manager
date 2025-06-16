@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
   // Gráfica de área: Ventas diarias
-  fetch("/getVentasDiarias.php")
+  fetch("../getVentasDiarias.php")
     .then((res) => res.json())
     .then((data) => {
       const ctx = document.getElementById("myAreaChart").getContext("2d");

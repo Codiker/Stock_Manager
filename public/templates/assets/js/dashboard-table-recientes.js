@@ -15,6 +15,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 `;
                 tbody.appendChild(tr);
             });
-            new simpleDatatables.DataTable("#tablaRecientes");
+            new simpleDatatables.DataTable("#tablaRecientes",{
+                labels: {
+                    placeholder: "Buscar...",
+                    perPage: " productos por página",
+                    noRows: "No se encontraron productos recientes",
+                    info: "Mostrando {start} a {end} de {rows} productos recientes"
+                }
+            });
         });
-});
+}); 

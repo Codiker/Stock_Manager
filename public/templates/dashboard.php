@@ -101,7 +101,7 @@ $usuario_rol = $_SESSION['usuario_rol'] ?? 0; // 1: Admin, 2: Usuario común
                         <div class="card bg-warning text-white mb-4">
                             <div class="card-body">
                                 <span id="productosBajoStock">-</span>
-                                <div>Stock Bajo (ej: 10)</div>
+                                <div>Stock Bajo </div>
                             </div>
                         </div>
                     </div>
@@ -109,7 +109,7 @@ $usuario_rol = $_SESSION['usuario_rol'] ?? 0; // 1: Admin, 2: Usuario común
                         <div class="card bg-success text-white mb-4">
                             <div class="card-body">
                                 <span id="ventasHoy">-</span>
-                                <div>Ventas hoy (ej: $150.000)</div>
+                                <div>Ventas hoy</div>
                             </div>
                         </div>
                     </div>
@@ -177,7 +177,6 @@ $usuario_rol = $_SESSION['usuario_rol'] ?? 0; // 1: Admin, 2: Usuario común
                     document.getElementById('totalCategorias').textContent = data.total_categorias ?? '-';
                     document.getElementById('productosBajoStock').textContent = data.productos_bajo_stock ?? '-';
                     document.getElementById('productosAgotados').textContent = data.productos_agotados ?? '-';
-                    // Si tienes ventas hoy, agrégalo aquí. Por ahora, muestra 0.
                     document.getElementById('ventasHoy').textContent = data.ventas_hoy ?? '0';
                 });
         });

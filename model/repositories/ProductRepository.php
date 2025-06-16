@@ -277,4 +277,26 @@ class ProductRepository
         }
         return $result;
     }
+
+    public function listarDesactivados(int $limite = 100, int $offset = 0): array
+{
+    try {
+        $stmt = $this->db->prepare("
+            SELECT p.*, c.nombre AS categoria_nombre
+            FROM productos p
+            JOIN categorias c ON p.categoria_id = c.id
+            WHERE p.activo = false
+            ORDER BY p.id
+            LIMIT :limite OFFSET :offset
+        ");
+        $stmt->bindValue(':limite', $limite, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $this->mapearProductos($stmt);
+    } catch (PDOException $e) {
+        error_log("Error al listar productos desactivados: " . $e->getMessage());
+        return [];
+    }
+}
 }
