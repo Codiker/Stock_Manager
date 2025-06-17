@@ -15,12 +15,13 @@ $usuario_rol = $_SESSION['usuario_rol'] ?? 0; // 1: Admin, 2: Usuario común
     <title>Panel de Control - StockManager</title>
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
     <link href="assets/css/styles.css" rel="stylesheet" />
+    <link href="assets/css/dashboard.css" rel="stylesheet" />
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
 </head>
 
 <body class="sb-nav-fixed">
     <!-- BARRA SUPERIOR -->
-    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+    <nav class="sb-topnav navbar navbar-expand navbar-dark">
         <a class="navbar-brand ps-3" href="#">StockManager</a>
         <button class="btn btn-link btn-sm me-4" id="sidebarToggle"><i class="fas fa-bars"></i></button>
         <ul class="navbar-nav ms-auto me-3">
@@ -39,7 +40,7 @@ $usuario_rol = $_SESSION['usuario_rol'] ?? 0; // 1: Admin, 2: Usuario común
     <div id="layoutSidenav">
         <!-- MENÚ LATERAL -->
         <div id="layoutSidenav_nav">
-            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+            <nav class="sb-sidenav accordion sb-sidenav" id="sidenavAccordion">
                 <div class="sb-sidenav-menu">
                     <div class="nav">
                         <div class="sb-sidenav-menu-heading">General</div>
@@ -56,6 +57,9 @@ $usuario_rol = $_SESSION['usuario_rol'] ?? 0; // 1: Admin, 2: Usuario común
                         </a>
                         <a class="nav-link" href="reportes.php">
                             <div class="sb-nav-link-icon"><i class="fas fa-chart-line"></i></div> Reportes
+                        </a>
+                        <a class="nav-link" href="VistaVentas.php">
+                            <div class="sb-nav-link-icon"><i class="fas fa-cash-register"></i></div> Ventas
                         </a>
                         <?php if ($usuario_rol == 1): ?>
                             <a class="nav-link" href="usuarios.php">
@@ -108,7 +112,7 @@ $usuario_rol = $_SESSION['usuario_rol'] ?? 0; // 1: Admin, 2: Usuario común
                         <div class="card bg-success text-white mb-4">
                             <div class="card-body">
                                 <span id="ventasHoy">-</span>
-                                <div>Ventas hoy</div>
+                                <div>Movimientos Hoy</div>
                             </div>
                         </div>
                     </div>
@@ -126,7 +130,7 @@ $usuario_rol = $_SESSION['usuario_rol'] ?? 0; // 1: Admin, 2: Usuario común
                 <div class="row">
                     <div class="col-xl-6">
                         <div class="card mb-4">
-                            <div class="card-header"><i class="fas fa-chart-area me-1"></i> Ventas Diarias</div>
+                            <div class="card-header"><i class="fas fa-chart-area me-1"></i> Ventas</div>
                             <div class="card-body"><canvas id="myAreaChart" width="100%" height="40"></canvas></div>
                         </div>
                     </div>

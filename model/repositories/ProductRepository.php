@@ -29,7 +29,7 @@ class ProductRepository
                 $query = "INSERT INTO productos 
                          (nombre, descripcion, precio, stock, categoria_id, activo, estado, created_at)
                          VALUES (:nombre, :descripcion, :precio, :stock, :categoria_id, :activo, :estado, :created_at)";
-            }
+            } 
 
             $stmt = $this->db->prepare($query);
 

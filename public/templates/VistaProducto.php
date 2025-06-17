@@ -90,7 +90,8 @@ if (!empty($errores)) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 
-<body>
+
+    
     <div class="container mt-5">
         <div class="d-flex justify-content-between mb-3">
             <h2>Gestión de Productos</h2>

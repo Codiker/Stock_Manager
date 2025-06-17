@@ -1,6 +1,4 @@
-// alerts.js - Manejo de notificaciones y eventos de productos
 
-// Configuración base
 const BASE_URL = window.location.origin + '/App_InventariosV.1/Stock_Manager';
 
 // Notificaciones con SweetAlert2
@@ -16,8 +14,6 @@ function showNotification(type, message) {
     };
     return Swal.fire(config);
 }
-
-// Manejo de parámetros URL
 function handleUrlNotifications() {
     const urlParams = new URLSearchParams(window.location.search);
     const success = urlParams.get('success');
@@ -27,9 +23,8 @@ function handleUrlNotifications() {
     if (error) showNotification('error', error);
 }
 
-// Gestión de productos
 function setupProductHandlers() {
-    // Botón de editar
+
     document.querySelectorAll(".btn-editar").forEach(btn => {
         btn.addEventListener("click", () => {
             const id = btn.dataset.id;
@@ -57,7 +52,6 @@ function setupProductHandlers() {
         });
     });
 
-    // Enviar formulario
     document.querySelector("#formEditarProducto")?.addEventListener("submit", (e) => {
         e.preventDefault();
         const form = e.target;

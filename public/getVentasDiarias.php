@@ -5,3 +5,4 @@ header('Content-Type: application/json');
 $repo = new MovimientoRepository();
 $ventas = $repo->obtenerVentasUltimosDias(7); // Devuelve ['2025-06-09'=>5, ...]
 echo json_encode($ventas);
+?>

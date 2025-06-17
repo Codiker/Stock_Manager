@@ -82,7 +82,7 @@ class Usuario
             $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
             $nuevoId = $resultado['id'] ?? null;
 
-            return $nuevoId ? new Usuario($nuevoId, $nombre, $email, $hashedClave, $rol_id, $estado) : null;
+            return $nuevoId ? new Usuario($nombre, $email, $hashedClave, $rol_id, $estado, $nuevoId) : null;
         } catch (PDOException $e) {
             error_log("Error al crear usuario: " . $e->getMessage());
             return null;

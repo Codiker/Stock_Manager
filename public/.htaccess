@@ -1,0 +1,12 @@
+# filepath: public/.htaccess
+# Redirige todo a index.php si no es un archivo o directorio real
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [QSA,L]
+
+# Opcional: Protege archivos sensibles
+<FilesMatch "\.(env|json|lock|md|gitignore|htaccess)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>

@@ -1,5 +1,5 @@
 <div id="layoutSidenav_nav">
-    <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+    <nav class="sb-sidenav accordion sb-sidenav" id="sidenavAccordion">
         <div class="sb-sidenav-menu">
             <div class="nav">
                 <div class="sb-sidenav-menu-heading">General</div>
@@ -16,6 +16,11 @@
                 <a class="nav-link" href="reportes.php">
                     <div class="sb-nav-link-icon"><i class="fas fa-chart-line"></i></div> Reportes
                 </a>
+                
+                <a class="nav-link" href="VistaVentas.php">
+                    <div class="sb-nav-link-icon"><i class="fas fa-cash-register"></i></div> Ventas
+                </a>
+
                 <?php if ($_SESSION['usuario_rol'] === 1): ?>
                     <a class="nav-link" href="usuarios.php">
                         <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div> Usuarios
@@ -25,7 +30,7 @@
                     <div class="sb-nav-link-icon"><i class="fas fa-sign-out-alt"></i></div> Salir
                 </a>
             </div>
-        </div> 
+        </div>
         <div class="sb-sidenav-footer">
             <div class="small">Conectado como:</div>
             <?php
