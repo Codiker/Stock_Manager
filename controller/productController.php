@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../model/repository/ProductRepository.php';
+require_once __DIR__ . '/../model/repositories/productRepository.php';
 require_once __DIR__ . '/../model/Product.php';
 
 $repo = new ProductRepository();

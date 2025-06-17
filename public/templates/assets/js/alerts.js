@@ -1,7 +1,7 @@
 // alerts.js - Manejo de notificaciones y eventos de productos
 
 // Configuración base
-const BASE_URL = window.location.origin + '/AppInventario/Stock_Manager/public';
+const BASE_URL = window.location.origin + '/App_InventariosV.1/Stock_Manager';
 
 // Notificaciones con SweetAlert2
 function showNotification(type, message) {
@@ -33,7 +33,7 @@ function setupProductHandlers() {
     document.querySelectorAll(".btn-editar").forEach(btn => {
         btn.addEventListener("click", () => {
             const id = btn.dataset.id;
-            fetch(`${BASE_URL}/controller/ProductoController.php?id=${id}`)
+            fetch(`${BASE_URL}/controller/productController.php?id=${id}`)
                 .then(res => res.json())
                 .then(data => {
                     if (data.success) {
@@ -63,7 +63,7 @@ function setupProductHandlers() {
         const form = e.target;
         const data = new FormData(form);
 
-        fetch(`${BASE_URL}/controller/ProductoController.php`, {
+        fetch(`${BASE_URL}/controller/productController.php`, {
             method: "POST",
             body: data
         })
